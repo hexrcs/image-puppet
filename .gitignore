@@ -135,3 +135,7 @@ $RECYCLE.BIN/
 
 
 # End of https://www.gitignore.io/api/node,macos,linux,windows,visualstudiocode
+
+# exclude debugging and images directories
+debugging/
+images/

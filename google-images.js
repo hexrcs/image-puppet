@@ -1,14 +1,20 @@
 const puppeteer = require('puppeteer')
+const fs = require('fs')
 const mkdirp = require('mkdirp')
+const download = require('download')
 
 const SEARCH_FIELD_HOME = 'input[title="Search"][type="text"]'
 const SEARCH_BUTTON_HOME = 'button[value="Search"]'
 
 const SEARCH_KEYWORD = 'using iphone'
+const DATASET_NAME = 'iphone'
+const DATASET_DIR = `images/${DATASET_NAME}`
 
-mkdirp('shots')
+mkdirp('debugging/screenshots')
+mkdirp(DATASET_DIR)
+
 async function run() {
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage()
   await page.setViewport({ width: 1000, height: 600 })
 
@@ -19,7 +25,15 @@ async function run() {
 
   console.log(imgMetaList)
 
-  // await browser.close()
+  imgMetaList.forEach(e =>
+    download(e.oUrl, DATASET_DIR, {
+      filename: e.ext
+        ? `${e.oWidth}x${e.oHeight}-${e.id}.${e.ext}`
+        : `${e.oWidth}x${e.oHeight}-${e.id}`
+    })
+  )
+
+  await browser.close()
 }
 
 run()
@@ -46,8 +60,8 @@ function ibGetMetaList(searchKeyword) {
       pageTitle: parsed.pt,
       oHeight: parsed.oh,
       oWidth: parsed.ow,
-      oId: parsed.id,
-      id: parsed.id.slice(0, -1) // trim last colon char
+      id: parsed.id.slice(0, -1), // trim last colon char
+      ext: parsed.ity
     }
   })
   return imgMetaList
