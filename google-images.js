@@ -27,19 +27,7 @@ async function run() {
 
   console.log(imgMetaList)
 
-  imgMetaList.forEach(async e => {
-    const fileName = `${e.oWidth}x${e.oHeight}-${e.id}`
-    await download(e.oUrl, DATASET_DIR, {
-      filename: fileName
-    })
-    const buffer = readChunk.sync(`${DATASET_DIR}/${fileName}`, 0, 4100)
-    const fileExt = fileType(buffer).ext
-    fs.rename(
-      `${DATASET_DIR}/${fileName}`,
-      `${DATASET_DIR}/${fileName}.${fileExt}`,
-      err => (err ? console.log(err) : null)
-    )
-  })
+  imgMetaList.forEach(downloadImage)
 
   await browser.close()
 }
@@ -73,4 +61,18 @@ function ibGetMetaList(searchKeyword) {
     }
   })
   return imgMetaList
+}
+
+async function downloadImage(e) {
+  const fileName = `${e.oWidth}x${e.oHeight}-${e.id}`
+  await download(e.oUrl, DATASET_DIR, {
+    filename: fileName
+  })
+  const buffer = readChunk.sync(`${DATASET_DIR}/${fileName}`, 0, 4100)
+  const fileExt = fileType(buffer).ext
+  fs.rename(
+    `${DATASET_DIR}/${fileName}`,
+    `${DATASET_DIR}/${fileName}.${fileExt}`,
+    err => (err ? console.log(err) : null)
+  )
 }
