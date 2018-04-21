@@ -14,13 +14,23 @@ async function run() {
   await launchSearch(page)
   await page.waitForNavigation({ waitUntil: 'domcontentloaded' })
 
-  const testing = await page.evaluate((SEARCH_KEYWORD) => {
+  const testing = await page.evaluate(SEARCH_KEYWORD => {
     const allImgTags = document.getElementsByTagName('img')
     const resultImgTagsArray = Array.from(allImgTags).filter(
       e => e['alt'] == `Image result for ${SEARCH_KEYWORD}`
     )
 
-    const allMetaDataArray = resultImgTagsArray.map(e => e.parentElement.nextElementSibling["innerText"])
+    const allMetaDataArray = resultImgTagsArray.map(e => {
+      const parsed = JSON.parse(e.parentElement.nextElementSibling['innerText'])
+      return {
+        oUrl: parsed.ou,
+        pageTitle: parsed.pt,
+        oHeight: parsed.oh,
+        oWidth: parsed.ow,
+        oId: parsed.id,
+        id: parsed.id.slice(0, -1)
+      }
+    })
     return {
       hello: allMetaDataArray
     }
