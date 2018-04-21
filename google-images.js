@@ -2,12 +2,14 @@ const puppeteer = require('puppeteer')
 const fs = require('fs')
 const mkdirp = require('mkdirp')
 const download = require('download')
+const readChunk = require('read-chunk')
+const fileType = require('file-type')
 
 const SEARCH_FIELD_HOME = 'input[title="Search"][type="text"]'
 const SEARCH_BUTTON_HOME = 'button[value="Search"]'
 
-const SEARCH_KEYWORD = 'using iphone'
-const DATASET_NAME = 'iphone'
+const SEARCH_KEYWORD = 'using ipad'
+const DATASET_NAME = 'ipad'
 const DATASET_DIR = `images/${DATASET_NAME}`
 
 mkdirp('debugging/screenshots')
@@ -25,13 +27,19 @@ async function run() {
 
   console.log(imgMetaList)
 
-  imgMetaList.forEach(e =>
-    download(e.oUrl, DATASET_DIR, {
-      filename: e.ext
-        ? `${e.oWidth}x${e.oHeight}-${e.id}.${e.ext}`
-        : `${e.oWidth}x${e.oHeight}-${e.id}`
+  imgMetaList.forEach(async e => {
+    const fileName = `${e.oWidth}x${e.oHeight}-${e.id}`
+    await download(e.oUrl, DATASET_DIR, {
+      filename: fileName
     })
-  )
+    const buffer = readChunk.sync(`${DATASET_DIR}/${fileName}`, 0, 4100)
+    const fileExt = fileType(buffer).ext
+    fs.rename(
+      `${DATASET_DIR}/${fileName}`,
+      `${DATASET_DIR}/${fileName}.${fileExt}`,
+      err => (err ? console.log(err) : null)
+    )
+  })
 
   await browser.close()
 }
