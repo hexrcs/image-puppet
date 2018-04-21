@@ -23,13 +23,15 @@ async function run() {
   await launchSearch(page)
   await page.waitForNavigation({ waitUntil: 'domcontentloaded' })
 
+  await autoScroll(page)
+
   const imgMetaList = await page.evaluate(ibGetMetaList, SEARCH_KEYWORD)
 
   console.log(imgMetaList)
 
   imgMetaList.forEach(downloadImage)
 
-  await browser.close()
+  // await browser.close()
 }
 
 run()
@@ -49,7 +51,7 @@ function ibGetMetaList(searchKeyword) {
     e => e['alt'] == `Image result for ${searchKeyword}`
   )
 
-  const imgMetaList = resultImgTags.map(e => {
+  const imgMetaList = resultImgTags.filter(e => e['name']).map(e => {
     const parsed = JSON.parse(e.parentElement.nextElementSibling['innerText'])
     return {
       oUrl: parsed.ou, // original url
@@ -75,4 +77,24 @@ async function downloadImage(e) {
     `${DATASET_DIR}/${fileName}.${fileExt}`,
     err => (err ? console.log(err) : null)
   )
+}
+
+// stolen from https://github.com/GoogleChrome/puppeteer/issues/844
+async function autoScroll(page) {
+  return await page.evaluate(() => {
+    return new Promise((resolve, reject) => {
+      var totalHeight = 0
+      var distance = 100
+      var timer = setInterval(() => {
+        var scrollHeight = document.body.scrollHeight
+        window.scrollBy(0, distance)
+        totalHeight += distance
+
+        if (totalHeight >= scrollHeight) {
+          clearInterval(timer)
+          resolve()
+        }
+      }, 100)
+    })
+  })
 }
