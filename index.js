@@ -17,3 +17,10 @@ const defaultOptions = {
 
 program
   .version('0.0.1')
+  .description('A handy toolkit for preparing your own image datasets right from Google Images')
+
+// no arguments to launch interactive mode
+// program
+//   .command()
+
+program.parse(process.argv);

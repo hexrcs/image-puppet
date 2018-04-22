@@ -1,7 +1,13 @@
 {
   "name": "image-puppet",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "description": "A handy toolkit for preparing your own image datasets right from Google Images",
   "main": "index.js",
+  "preferGlobal": true,
+  "bin": "./index.js",
+  "repository": "https://github.com/hexrcs/image-puppet",
+  "keywords": ["download", "images", "google", "datasets"],
+  "homepage": "https://madeby.xiaoru.li/image-puppet",
   "author": "Xiaoru Li <dev@xiaoru.li>",
   "license": "MIT",
   "dependencies": {
