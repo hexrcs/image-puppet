@@ -5,6 +5,7 @@
   "author": "Xiaoru Li <dev@xiaoru.li>",
   "license": "MIT",
   "dependencies": {
+    "commander": "^2.15.1",
     "download": "^6.2.5",
     "file-type": "^7.6.0",
     "mkdirp": "^0.5.1",
