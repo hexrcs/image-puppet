@@ -139,3 +139,4 @@ $RECYCLE.BIN/
 # exclude debugging and images directories
 debugging/
 images/
+data/
