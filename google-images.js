@@ -8,21 +8,7 @@ const fileType = require('file-type')
 const SEARCH_FIELD_HOME = 'input[title="Search"][type="text"]'
 const SEARCH_BUTTON_HOME = 'button[value="Search"]'
 
-// mkdirp('debugging/screenshots')
-
-const defaultOptions = {
-  searchKeyword: 'using ipad',
-  downloadDir: 'data',
-  datasetName: 'ipad',
-  maxCount: 100,
-  maxWidth: 0,
-  maxHeight: 0,
-  minWidth: 0,
-  minHeight: 0,
-  convertTo: null
-}
-
-async function run(options = defaultOptions) {
+async function run(options) {
   const fullDownloadDir = `${options.downloadDir}/${options.datasetName}`
   mkdirp(fullDownloadDir)
 
@@ -44,8 +30,6 @@ async function run(options = defaultOptions) {
 
   // await browser.close()
 }
-
-run()
 
 async function launchSearch(page, searchKeyword) {
   await page.goto('https://images.google.com/ncr')
@@ -113,3 +97,5 @@ async function autoScroll(page) {
     })
   })
 }
+
+module.exports = run
