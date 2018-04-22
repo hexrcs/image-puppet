@@ -40,7 +40,7 @@ async function run(options = defaultOptions) {
 
   console.log(imgMetaList)
 
-  imgMetaList.forEach(downloadImageTo(options.downloadDir))
+  imgMetaList.forEach(downloadImageTo(fullDownloadDir))
 
   // await browser.close()
 }
