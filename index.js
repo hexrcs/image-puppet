@@ -44,9 +44,9 @@ program
 //
 // 3. other options
 //
-// $ image-puppet 
-//    -s "big cats" 
-//    -n cats 
+// $ image-puppet
+//    -s "big cats"
+//    -n cats
 //    -d image
 //    -n 200
 //    -w MIN_WIDTH
@@ -56,4 +56,15 @@ program
 //    -f jpg
 //
 
-program.parse(process.argv)
+program
+  .option('-s, --searchKeyword <searchKeyword>', 'Keywords to be used in search')
+  .option('-n, --datasetName <datasetName>', 'Name of the dataset')
+  .option('-d, --downloadDir <downloadDir>', 'Location of the download directory')
+  .option('-n, --maxCount <maxCount>', 'Maximum number of images to download')
+  .parse(process.argv)
+
+console.log('The stuff you required:')
+if (program.searchKeyword) console.log(program.searchKeyword)
+if (program.datasetName) console.log(program.datasetName)
+if (program.directory) console.log(program.downloadDir)
+if (program.maxCount) console.log(program.maxCount)
