@@ -12,23 +12,29 @@ async function run(options) {
   const fullDownloadDir = `${options.downloadDir}/${options.datasetName}`
   mkdirp(fullDownloadDir)
 
-  const browser = await puppeteer.launch({ headless: false })
+  console.log(`Preparing to download image search results of ${options.searchKeyword}!`)
+
+  const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
   await page.setViewport({ width: 1000, height: 600 })
 
+  console.log(`Parsing results...`)
   await launchSearch(page, options.searchKeyword)
   await page.waitForNavigation({ waitUntil: 'domcontentloaded' })
 
   await autoScroll(page)
 
   const imgMetaListFull = await page.evaluate(ibGetMetaList, options.searchKeyword)
+  if (imgMetaListFull.length < options.maxCount) {
+    console.log(`We only got ${imgMetaListFull.length} results back.`)
+  }
   const imgMetaList = imgMetaListFull.slice(0, options.maxCount)
 
-  console.log(imgMetaList)
-
+  console.log(`Start downloading ${imgMetaList.length} images into ${fullDownloadDir}!`)
   imgMetaList.forEach(downloadImageTo(fullDownloadDir))
 
-  // await browser.close()
+  await browser.close()
+  console.log('Done!')
 }
 
 async function launchSearch(page, searchKeyword) {
@@ -98,4 +104,4 @@ async function autoScroll(page) {
   })
 }
 
-module.exports = run
+module.exports = { run }

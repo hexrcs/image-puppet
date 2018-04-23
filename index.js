@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const program = require('commander')
-const run = require('./google-images')
+const { run } = require('./google-images')
 
 const defaultOptions = {
   searchKeyword: 'cats',
