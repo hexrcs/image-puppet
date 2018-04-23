@@ -45,10 +45,11 @@ program
 // 3. other options
 //
 // $ image-puppet
-//    -s "big cats"
-//    -n cats
-//    -d image
+//    "big cats"
+//    cats
+//    image
 //    -n 200
+
 //    -w MIN_WIDTH
 //    -W MAX_WIDTH
 //    -h MIN_HEIGHT
@@ -56,15 +57,22 @@ program
 //    -f jpg
 //
 
-program
-  .option('-s, --searchKeyword <searchKeyword>', 'Keywords to be used in search')
-  .option('-n, --datasetName <datasetName>', 'Name of the dataset')
-  .option('-d, --downloadDir <downloadDir>', 'Location of the download directory')
-  .option('-n, --maxCount <maxCount>', 'Maximum number of images to download')
-  .parse(process.argv)
+let currentOptions = {}
 
-console.log('The stuff you required:')
-if (program.searchKeyword) console.log(program.searchKeyword)
-if (program.datasetName) console.log(program.datasetName)
-if (program.directory) console.log(program.downloadDir)
-if (program.maxCount) console.log(program.maxCount)
+program
+  .arguments('<search-keywords> <dataset-name> <download-dir>')
+  .action((searchKeyword, datasetName, downloadDir) => {
+    addToOptions({ searchKeyword, datasetName, downloadDir })
+  })
+
+program.option('-n, --maxCount <maxCount>', 'Maximum number of images to download')
+
+program.parse(process.argv)
+
+addToOptions({ maxCount: program.maxCount })
+
+run(currentOptions)
+
+function addToOptions(newOptions = defaultOptions) {
+  currentOptions = { ...currentOptions, ...newOptions }
+}
